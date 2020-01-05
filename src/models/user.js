@@ -52,6 +52,12 @@ const userSchema = new mongoose.Schema( {
     ]
 })
 
+userSchema.virtual('tasks',{
+    ref : "Task",
+    localField : "_id",
+    foreignField : "author"
+})
+
  
 
 userSchema.pre('save',async function(next){
@@ -62,6 +68,12 @@ userSchema.pre('save',async function(next){
     next()
 } )
 
+
+userSchema.pre('remove',async function(next){
+    const user = this;
+    Task.deleteMany({author : user._id})
+    next()
+})
 
 userSchema.methods.generateAuthToken = async function(){
 const user = this ; 
