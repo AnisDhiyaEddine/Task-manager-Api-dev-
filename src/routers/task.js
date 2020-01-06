@@ -7,10 +7,33 @@ const Task = require('../models/task')
 
 
 router.get('/tasks',auth,async(req,res)=>{
+ //{{url}}/tasks?completed=value
+    const match = {};
+    if(req.query.completed){
+        match.completed = req.query.completed === "true";
+    }
+//{{url}}/tasks?sortBy=property:asc||desc
+    const sort={}
+
+    if(req.query.sortBy){
+        const parts = req.query.sortBy.split(":")
+        console.log(parts)
+        sort[parts[0]] = parts[1]==="asc" ? 1 : -1;
+    }
 
     try{
       // const tasks = await Task.find({author : req.user._id})  
-      await req.user.populate('tasks').execPopulate()
+     
+      await req.user.populate({
+          path : "tasks",
+          match,
+          options:{
+              limit : parseInt(req.query.limit),
+              skip : parseInt(req.query.skip),              
+              sort
+          }
+      }
+      ).execPopulate()
        
         res.send(req.user.tasks).status(200) 
     }catch (e){
@@ -55,7 +78,7 @@ router.post('/tasks',auth, async (req, res) => {
         res.status(400).send(e)
     }
 })
-
+ 
  
 router.patch('/tasks/:id',auth,async (req,res)=>{
 
