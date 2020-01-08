@@ -37,15 +37,7 @@ router.get('/tasks',auth,async(req,res)=>{
        
         res.send(req.user.tasks).status(200) 
     }catch (e){
-        res.send(e).status(400);router.get('/tasks',auth,async(req,res)=>{
-
-            try{
-                const tasks = await Task.find({owner : req.user._id})
-                res.send(tasks).status(200) 
-            }catch (e){
-                res.send(e).status(400);
-            }
-            })
+        res.send(e).status(400);
         }
 
     })     
@@ -56,7 +48,7 @@ router.get('/tasks',auth,async(req,res)=>{
     router.get('/tasks/:id',auth,async (req,res)=>{
         const _id = req.params.id;
       try{
-   const task = await Task.findOne({_id,owner:req.user._id})
+   const task = await Task.findOne({_id,author:req.user._id})
    if(! task){return res.send().status(404)}
    res.send(task).status(200)
       }catch(e){
@@ -68,7 +60,7 @@ router.get('/tasks',auth,async(req,res)=>{
 
 router.post('/tasks',auth, async (req, res) => {
     const task = new Task({
-        ... req.body,
+        ...req.body,
         author : req.user._id
     })
     try{  

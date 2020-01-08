@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
- 
+const Task = require('../models/task')
+
 
 const userSchema = new mongoose.Schema( {
     name: {
@@ -49,7 +50,10 @@ const userSchema = new mongoose.Schema( {
                 required : true
             }
         }
-    ]
+    ],
+    avatar :{
+        type : Buffer
+    }
 },{
     timestamps : true
 })
@@ -80,22 +84,26 @@ userSchema.pre('remove',async function(next){
 
 userSchema.methods.generateAuthToken = async function(){
 const user = this ; 
-const token =  jwt.sign({_id : user._id.toString()},"PassString")
+const token =  jwt.sign({_id : user._id.toString()},process.env.JWT_SECRET)
 user.tokens = user.tokens.concat({token})
 
 return token
-}
+} 
 
-userSchema.methods.toJSON =function (){
+
+//hide private data .. The Confusing part
+userSchema.methods.toJSON =function (){ 
     const user = this
  
     const userObject = user.toObject();
   
     delete userObject.password;   
-    delete userObject.tokens;      
+    delete userObject.tokens;  
+    delete userObject.avatar;    
 
     return userObject   
 }
+
 
 userSchema.statics.findBycredentials = async (email,password)=>{
 
@@ -112,7 +120,7 @@ userSchema.statics.findBycredentials = async (email,password)=>{
 
 } 
 
-
+  
 
 const User = mongoose.model('User',userSchema)
 
