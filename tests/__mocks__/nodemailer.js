@@ -2,9 +2,9 @@
 module.exports = {
     createTransport(){
         return {
-            sendMail(){
-                
+            sendMail(){  
             }
         }
     }
-}
+}   
+

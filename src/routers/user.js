@@ -50,7 +50,6 @@ router.post('/users/me/avatar',auth,upload.single('avatar'),async (req,res)=>{
     //Basic usage of Jimp       "feel blessed"
     const image = await Jimp.read(req.file.buffer);
     image.resize(250,250)
-    console.log(image)
     req.user.avatar = await image.getBufferAsync(Jimp.MIME_PNG);
     await req.user.save()
   res.send()
