@@ -16,7 +16,6 @@ res.send(req.user)
 
 router.post('/users',async (req, res) => {
     const user =  new User(req.body)
-    console.log(user)
     try{
         const token = await user.generateAuthToken(); 
          await user.save();
@@ -63,7 +62,7 @@ router.post('/users/me/avatar',auth,upload.single('avatar'),async (req,res)=>{
 router.delete('/users/me/avatar',auth,async (req,res)=>{
     req.user.avatar = undefined;
     await req.user.save()
-    res.send() 
+    res.status(200).send() 
   
 })
 
@@ -93,7 +92,6 @@ router.delete('/users/me/avatar',auth,async (req,res)=>{
             res.send(req.user)
         } catch (e) {
             res.status(500).send()
-            console.log(e)
         }
     })
     
@@ -102,11 +100,11 @@ router.delete('/users/me/avatar',auth,async (req,res)=>{
             try{
              const user =await  User.findBycredentials(req.body.email,req.body.password);
              const token = await user.generateAuthToken()
-
+          
              await user.save()
              res.send({user,token})
             }catch(e){
-                res.status(400)
+                res.status(400).send()
             }
         })
 
@@ -122,7 +120,7 @@ router.delete('/users/me/avatar',auth,async (req,res)=>{
                 await req.user.save()
                 res.send() 
             }catch(e){
-                res.status(500)
+                res.status(500).send()
             }
         })
 
@@ -132,7 +130,7 @@ router.delete('/users/me/avatar',auth,async (req,res)=>{
                 await req.user.save()
                 res.send() 
             } catch (e) { 
-                res.status(500)
+                res.status(500).send()
             }
         })
  

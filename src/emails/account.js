@@ -12,7 +12,7 @@ var transporter = nodemailer.createTransport({
     pass: process.env.PASSWORD
   }
 });
-
+  
 
 
 const sendWelcomeEmail = ({email,name})=>{

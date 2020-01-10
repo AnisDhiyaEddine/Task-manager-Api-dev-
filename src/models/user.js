@@ -118,10 +118,10 @@ userSchema.statics.findBycredentials = async (email,password)=>{
 
     return user
 
-} 
+}  
 
   
-
+ 
 const User = mongoose.model('User',userSchema)
 
 
